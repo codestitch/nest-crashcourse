@@ -9,9 +9,18 @@ export class UserService {
       id: 0,
       name: 'Joe',
     },
+    {
+      id: 1,
+      name: 'Maria',
+    },
   ];
 
-  findAll(): User[] {
+  findAll(name?: string): User[] {
+    if (name) {
+      return this.users.filter(
+        (user) => user.name.toLowerCase() === name.toLowerCase(),
+      );
+    }
     return this.users;
   }
 

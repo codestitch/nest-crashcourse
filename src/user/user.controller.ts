@@ -1,8 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('user')
 @Controller('user')
@@ -10,9 +15,10 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOkResponse({ type: User, isArray: true })
+  @ApiQuery({ name: 'name', required: false })
   @Get()
-  getUser(): User[] {
-    return this.userService.findAll();
+  getUser(@Query('name') name: string): User[] {
+    return this.userService.findAll(name);
   }
 
   @ApiOkResponse({ type: User })
