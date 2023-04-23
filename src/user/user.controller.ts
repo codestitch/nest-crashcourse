@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import {
+  ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -33,9 +35,8 @@ export class UserController {
   @ApiOkResponse({ type: User })
   @ApiNotFoundResponse()
   @Get(':id')
-  getUserId(@Param('id') id: string): User {
-    // TODO: auto parse id param from string to number
-    const user = this.userService.findById(Number(id));
+  getUserId(@Param('id', ParseIntPipe) id: number): User {
+    const user = this.userService.findById(id);
 
     if (!user) {
       throw new NotFoundException();
@@ -45,6 +46,7 @@ export class UserController {
   }
 
   @ApiCreatedResponse({ type: User })
+  @ApiBadRequestResponse()
   @Post()
   createUser(@Body() user: CreateUserDto): User {
     return this.userService.createUser(user);
